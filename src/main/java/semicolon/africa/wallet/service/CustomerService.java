@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CustomerService {
     CustomerResponse registerCustomer(CustomerRequest customerRequest);
-    CustomerResponse updateCustomer(CustomerRequest customerRequest);
+    CustomerResponse updateCustomer(Long id, CustomerRequest customerRequest);
     CustomerResponse findCustomerByPhoneNumber(String phoneNumber);
     List<CustomerResponse> findAllCustomers();
 }

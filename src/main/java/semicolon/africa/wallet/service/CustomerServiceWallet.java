@@ -13,6 +13,7 @@ import semicolon.africa.wallet.dtos.response.CustomerResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,20 +31,38 @@ public class CustomerServiceWallet implements CustomerService{
         customer.setPhoneNumber(customerRequest.getPhoneNumber());
         customer.setEmail(customerRequest.getEmail());
         customer.setPassword(customer.getPassword());
-//        customer.setAccounts(new ArrayList<>());
-        return null;
-    }
-    private void addAccount(String phoneNumber, Account account){
-        customerRepository.findCustomerByPhoneNumber(phoneNumber).getAccounts().add(account);
-    }
-    public  void createdAccount(AccountRequest accountRequest, String phone){
+        customer.setAccounts(customerRequest.getAccounts());
+        customer.setAddress(customerRequest.getAddress());
 
-//        addAccount(phone,accountService.createAccount(accountRequest));
+        Customer savedCustomer = customerRepository.save(customer);
+        log.info("New customer registered successfully");
+        return listOfCustomers(savedCustomer);
     }
+//    private void addAccount(String phoneNumber, Account account){
+//        customerRepository.findCustomerByPhoneNumber(phoneNumber).getAccounts().add(account);
+//    }
+//    public  void createdAccount(AccountRequest accountRequest, String phone){
+//
+//        addAccount(phone,accountService.createAccount(accountRequest));
+//    }
 
     @Override
-    public CustomerResponse updateCustomer(CustomerRequest customerRequest) {
-        return null;
+    public CustomerResponse updateCustomer(Long id, CustomerRequest customerRequest) {
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer Not Found"));
+
+        customer.setAddress(customerRequest.getAddress());
+        customer.setFirstName(customerRequest.getFirstName());
+        customer.setLastName(customerRequest.getLastName());
+        customer.setPhoneNumber(customerRequest.getPhoneNumber());
+        customer.setEmail(customerRequest.getEmail());
+        customer.setPassword(customer.getPassword());
+        customer.setAccounts(customerRequest.getAccounts());
+        customer.setAddress(customerRequest.getAddress());
+
+        Customer updatedCustomer = customerRepository.save(customer);
+        log.info("Customer account updated successfully ");
+
+        return listOfCustomers(updatedCustomer);
     }
 
     @Override
@@ -58,11 +77,29 @@ public class CustomerServiceWallet implements CustomerService{
             customerResponse.setEmail(customer.getEmail());
             
         }
-        return null;
+        return new CustomerResponse();
     }
 
     @Override
     public List<CustomerResponse> findAllCustomers() {
-        return null;
+        List<Customer> customers = customerRepository.findAll();
+        return customers.stream()
+                .map(this::listOfCustomers)
+                .collect(Collectors.toList());
+    }
+
+    private  CustomerResponse listOfCustomers(Customer customer){
+        CustomerResponse customerResponse = new CustomerResponse();
+        customerResponse.setCustomerId(customer.getCustomerId());
+        customerResponse.setAddress(customer.getAddress());
+        customerResponse.setFirstName(customer.getFirstName());
+        customerResponse.setLastName(customer.getLastName());
+        customerResponse.setPhoneNumber(customer.getPhoneNumber());
+        customerResponse.setEmail(customer.getEmail());
+        customerResponse.setAccounts(customer.getAccounts());
+        customerResponse.setAddress(customer.getAddress());
+
+        return customerResponse;
+
     }
 }
