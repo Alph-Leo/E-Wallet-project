@@ -1,22 +1,23 @@
 package semicolon.africa.wallet.data.models;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
-
-@Data
-@NoArgsConstructor
+import java.util.List;
 @AllArgsConstructor
-@Document
-public class Loan {
+@NoArgsConstructor
+@Getter
+@Setter
+@Document("Wallet")
+public class Wallet {
     @Id
-    private String loanId;
-    private BigDecimal loanAmount;
-    private BigDecimal loanInterestRate;
-    private Account account;
-    private LoanType typeOfLoan;
+    private String walletId;
+    private BigDecimal balance;
+    private User user;
+    private List<Transaction> transactions;
 }

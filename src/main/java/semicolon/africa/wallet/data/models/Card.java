@@ -1,21 +1,21 @@
 package semicolon.africa.wallet.data.models;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document("Address")
-public class Address {
-    @Id
-    private String addressId;
-    private String houseNumber;
-    private String street;
-    private String localGovernmentArea;
-    private String state;
-    private String country;
+@Getter
+@Setter
+@Document("Card")
+public class Card {
+   private String serialNumber;
+   private String expiryDate;
+   private String cvv;
+   private User user;
+
 }

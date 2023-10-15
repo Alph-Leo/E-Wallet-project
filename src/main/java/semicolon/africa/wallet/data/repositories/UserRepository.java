@@ -1,7 +1,7 @@
 package semicolon.africa.wallet.data.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import semicolon.africa.wallet.data.models.Bank;
+import semicolon.africa.wallet.data.models.User;
 
-public interface BankRepository extends MongoRepository<Bank, Long> {
+public interface UserRepository extends MongoRepository<User, String> {
 }
