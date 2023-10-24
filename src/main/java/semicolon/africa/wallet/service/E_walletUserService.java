@@ -1,52 +1,43 @@
 package semicolon.africa.wallet.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import semicolon.africa.wallet.data.models.Address;
-import semicolon.africa.wallet.data.models.BankAccount;
 import semicolon.africa.wallet.data.models.User;
 import semicolon.africa.wallet.data.repositories.UserRepository;
-import semicolon.africa.wallet.dtos.request.AddressRequest;
 import semicolon.africa.wallet.dtos.request.LoginRequest;
 import semicolon.africa.wallet.dtos.request.RegistrationRequest;
-import semicolon.africa.wallet.dtos.response.AddressResponse;
+import semicolon.africa.wallet.dtos.request.SignUpRequest;
 import semicolon.africa.wallet.dtos.response.LoginResponse;
-import semicolon.africa.wallet.dtos.response.RegistrationResponse;
+import semicolon.africa.wallet.dtos.response.SignUpResponse;
 import semicolon.africa.wallet.exception.WalletBaseException;
-import semicolon.africa.wallet.service.otpService.OtpService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.Objects;
 
-import static semicolon.africa.wallet.utils.AppUtils.*;
+import static semicolon.africa.wallet.utils.AppUtils.REGISTRATION_SUCCESSFUL_MESSAGE;
+import static semicolon.africa.wallet.utils.AppUtils.USER_NOT_FOUND_EXCEPTION;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Slf4j
 public class E_walletUserService implements UserService{
     private final UserRepository userRepository;
-    private OtpService otpService;
+    private final WalletService walletService;
     @Override
-    public RegistrationResponse signUp(RegistrationRequest registrationRequest) {
+    public SignUpResponse signUp(SignUpRequest signUpRequest) {
         User user = new User();
-        user.setUserName(registrationRequest.getUserName());
-        user.setEmail(registrationRequest.getEmail());
-        user.setPassword(registrationRequest.getPassword());
-        user.setPhoneNumber(registrationRequest.getPhoneNumber());
+        user.setUserName(signUpRequest.getUserName());
+        user.setEmail(signUpRequest.getEmail());
+        user.setPassword(signUpRequest.getPassword());
+        user.setPhoneNumber(signUpRequest.getPhoneNumber());
 
-        Address address = getAddress(registrationRequest);
-        user.setAddress(address);
-        user.setWallet(registrationRequest.getWallet());
-        user.setBankAccount(new ArrayList<>());
-        user.setCard(new ArrayList<>());
-        user.setNotification(registrationRequest.getNotification());
+        userRepository.save(user);
+        SignUpResponse response = new SignUpResponse();
+        response.setMessage(REGISTRATION_SUCCESSFUL_MESSAGE);
 
-            User savedUser = userRepository.save(user);
-            RegistrationResponse response = new RegistrationResponse();
-            response.setMessage(REGISTRATION_SUCCESSFUL_MESSAGE);
-
-            return response;
+        return response;
 
     }
 
@@ -62,13 +53,37 @@ public class E_walletUserService implements UserService{
     }
 
     @Override
-    public LoginResponse login(LoginRequest loginRequest) {
-        return null;
+    public LoginResponse login(LoginRequest request) {
+        String phoneNumber = request.getPhoneNumber();
+        String password = request.getPassword();
+
+        return getLoginResponse(phoneNumber, password);
     }
-    private String generateRandomOTP() {
-        Random random = new Random();
-        int otp = 1000 + random.nextInt(9000);
-        return String.valueOf(otp);
+
+    @NotNull
+    private LoginResponse getLoginResponse(String phoneNumber, String password) {
+        User user = userRepository.findUserByPhoneNumber(phoneNumber);
+        if (user != null){
+            if (Objects.equals(user.getPassword(), password)){
+                LoginResponse response = new LoginResponse();
+                response.setMessage("Welcome back !");
+                log.info("---->{}", response);
+                return response;
+            }
+            throw new WalletBaseException(USER_NOT_FOUND_EXCEPTION);
+        }
+        throw new WalletBaseException(USER_NOT_FOUND_EXCEPTION);
     }
+
+    @Override
+    public User findUserById(String id) {
+        User foundUser = userRepository
+                        .findById(id)
+                        .orElseThrow(()-> new WalletBaseException(USER_NOT_FOUND_EXCEPTION));
+        userRepository.save(foundUser);
+        return foundUser;
+    }
+
+
 
 }

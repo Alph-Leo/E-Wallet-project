@@ -23,8 +23,4 @@ public class RegistrationRequest {
     private String state;
     private String country;
     private Wallet wallet;
-    private List<Payment> payment;
-    private Notification notification;
-    private List<Card> card;
-    private List<BankAccount> bankAccount;
 }

@@ -1,37 +1,37 @@
 package semicolon.africa.wallet.service;
 
-import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import semicolon.africa.wallet.data.models.User;
 import semicolon.africa.wallet.data.models.Wallet;
 import semicolon.africa.wallet.data.repositories.WalletRepository;
 import semicolon.africa.wallet.dtos.request.WalletRequest;
 import semicolon.africa.wallet.dtos.response.WalletResponse;
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Slf4j
 public class E_WalletWalletService implements WalletService{
     private final WalletRepository walletRepository;
     @Override
     public WalletResponse createWallet(WalletRequest walletRequest) {
         Wallet wallet = new Wallet();
-        wallet.setWalletId(walletRequest.getWalletId());
         wallet.setBalance(walletRequest.getBalance());
         wallet.setTransactions(walletRequest.getTransactions());
-        wallet.setUser(walletRequest.getUser());
+        Wallet savedWallet = walletRepository.save(wallet);
 
-        WalletResponse response = getWalletResponse(wallet);
+        WalletResponse response = getWalletResponse(savedWallet);
         return response;
     }
 
-    @NotNull
+    @NonNull
     private WalletResponse getWalletResponse(Wallet wallet) {
-        Wallet savedWallet = walletRepository.save(wallet);
         WalletResponse response = new WalletResponse();
-        response.setWalletId(savedWallet.getWalletId());
-        response.setBalance(savedWallet.getBalance());
-        response.setTransactions(savedWallet.getTransactions());
-        response.setUser(savedWallet.getUser());
+        response.setWalletId(wallet.getWalletId());
+        response.setBalance(wallet.getBalance());
+        response.setTransactions(wallet.getTransactions());
+
         return response;
     }
 }

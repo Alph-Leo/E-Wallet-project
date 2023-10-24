@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import semicolon.africa.wallet.dtos.request.RegistrationRequest;
+import semicolon.africa.wallet.dtos.request.SignUpRequest;
 import semicolon.africa.wallet.dtos.response.RegistrationResponse;
+import semicolon.africa.wallet.dtos.response.SignUpResponse;
 import semicolon.africa.wallet.service.UserService;
 
 @RestController
@@ -19,8 +21,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<RegistrationResponse> signUp(@RequestBody RegistrationRequest request){
-        RegistrationResponse response = userService.signUp(request);
+    public ResponseEntity<SignUpResponse> signUp(@RequestBody SignUpRequest request){
+        SignUpResponse response = userService.signUp(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

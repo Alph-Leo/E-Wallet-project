@@ -15,6 +15,6 @@ public class WalletRequest {
     @Id
     private String walletId;
     private BigDecimal balance;
-    private User user;
+
     private List<Transaction> transactions;
 }

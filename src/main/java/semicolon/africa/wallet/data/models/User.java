@@ -1,15 +1,17 @@
 package semicolon.africa.wallet.data.models;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
+@RequiredArgsConstructor
 @Document("User")
 public class User {
     @Id
@@ -19,9 +21,6 @@ public class User {
     private String email;
     private String password;
     private Address address;
+    @Lazy
     private Wallet wallet;
-    private List<Payment> payment;
-    private Notification notification;
-    private List<Card> card;
-    private List<BankAccount> bankAccount;
 }

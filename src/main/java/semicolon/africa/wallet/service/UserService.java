@@ -1,11 +1,16 @@
 package semicolon.africa.wallet.service;
 
+import semicolon.africa.wallet.data.models.User;
 import semicolon.africa.wallet.dtos.request.LoginRequest;
-import semicolon.africa.wallet.dtos.request.RegistrationRequest;
+import semicolon.africa.wallet.dtos.request.SignUpRequest;
+import semicolon.africa.wallet.dtos.request.WalletRequest;
 import semicolon.africa.wallet.dtos.response.LoginResponse;
-import semicolon.africa.wallet.dtos.response.RegistrationResponse;
+import semicolon.africa.wallet.dtos.response.SignUpResponse;
+import semicolon.africa.wallet.dtos.response.WalletResponse;
 
 public interface UserService {
-    RegistrationResponse signUp(RegistrationRequest registrationRequest);
-    LoginResponse login(LoginRequest loginRequest);
+    SignUpResponse signUp(SignUpRequest signUpRequest);
+    LoginResponse login(LoginRequest request);
+    User findUserById(String id);
+
 }

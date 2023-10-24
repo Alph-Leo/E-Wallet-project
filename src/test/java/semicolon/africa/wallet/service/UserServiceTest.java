@@ -3,11 +3,11 @@ package semicolon.africa.wallet.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import semicolon.africa.wallet.data.models.Wallet;
+import semicolon.africa.wallet.dtos.request.LoginRequest;
 import semicolon.africa.wallet.dtos.request.RegistrationRequest;
-import semicolon.africa.wallet.dtos.response.RegistrationResponse;
-
-import java.util.ArrayList;
+import semicolon.africa.wallet.dtos.request.SignUpRequest;
+import semicolon.africa.wallet.dtos.response.LoginResponse;
+import semicolon.africa.wallet.dtos.response.SignUpResponse;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -19,18 +19,13 @@ public class UserServiceTest {
 
     @Test
     public void testThatUserCanSignUp(){
-        RegistrationRequest request = new RegistrationRequest();
-        request.setUserName("Saheed Dammy");
-        request.setEmail("saidex1@ymail.com");
-        request.setPassword("comingmessiah");
-        request.setPhoneNumber("08169717282");
-        getAddress(request);
-        request.setCard(new ArrayList<>());
-        request.setWallet(new Wallet());
-        request.setBankAccount(new ArrayList<>());
-        request.setBankAccount(new ArrayList<>());
+        SignUpRequest request = new SignUpRequest();
+        request.setUserName("Saidex");
+        request.setEmail("Leo_nation@yahoo.com");
+        request.setPassword("lionheart");
+        request.setPhoneNumber("07065506982");
 
-        RegistrationResponse newUser = userService.signUp(request);
+        SignUpResponse newUser = userService.signUp(request);
         assertNotNull(newUser);
 
 
@@ -44,4 +39,26 @@ public class UserServiceTest {
         request.setState("Lagos state");
         request.setCountry("Nigeria");
     }
+    @Test
+    public void testThatUserCanLogin(){
+        LoginRequest request = new LoginRequest();
+
+        request.setPhoneNumber("07065506982");
+        request.setPassword("lionheart");
+
+        LoginResponse response = userService.login(request);
+        assertNotNull(response);
+
+    }
+//    @Test
+//    public void testThatUserCanCreateWallet(){
+//        String userId = "6532590f00d6555dbbe9bb99";
+////        User user = new User();
+//        WalletRequest walletRequest = new WalletRequest();
+//        walletRequest.setBalance(BigDecimal.valueOf(0.00));
+//        walletRequest.setTransactions(null);
+
+//        WalletResponse response = userService.addWallet(walletRequest, userId);
+//        assertNotNull(response);
+//    }
 }

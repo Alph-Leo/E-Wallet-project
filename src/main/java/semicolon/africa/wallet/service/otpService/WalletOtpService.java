@@ -1,22 +1,15 @@
 package semicolon.africa.wallet.service.otpService;
 
-import com.nexmo.client.NexmoClient;
-import com.nexmo.client.NexmoResponseParseException;
-import com.nexmo.client.verify.VerifyClient;
-import com.nexmo.client.verify.VerifyRequest;
-import com.nexmo.client.verify.VerifyResponse;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
-import static semicolon.africa.wallet.utils.AppUtils.OTP_FAILED_EXCEPTION;
-import static semicolon.africa.wallet.utils.AppUtils.OTP_SUCCESS_MESSAGE;
-
-@Service@Slf4j
+@Service
+@Slf4j
+@AllArgsConstructor
 public class WalletOtpService implements OtpService{
 
         public void sendOtp(String recipientNumber) {
