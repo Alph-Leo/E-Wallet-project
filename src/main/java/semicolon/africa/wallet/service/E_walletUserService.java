@@ -6,14 +6,19 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import semicolon.africa.wallet.data.models.Address;
 import semicolon.africa.wallet.data.models.User;
+import semicolon.africa.wallet.data.models.Wallet;
 import semicolon.africa.wallet.data.repositories.UserRepository;
 import semicolon.africa.wallet.dtos.request.LoginRequest;
 import semicolon.africa.wallet.dtos.request.RegistrationRequest;
 import semicolon.africa.wallet.dtos.request.SignUpRequest;
+import semicolon.africa.wallet.dtos.request.WalletRequest;
 import semicolon.africa.wallet.dtos.response.LoginResponse;
 import semicolon.africa.wallet.dtos.response.SignUpResponse;
+import semicolon.africa.wallet.dtos.response.WalletResponse;
 import semicolon.africa.wallet.exception.WalletBaseException;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static semicolon.africa.wallet.utils.AppUtils.REGISTRATION_SUCCESSFUL_MESSAGE;
@@ -28,10 +33,21 @@ public class E_walletUserService implements UserService{
     @Override
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
         User user = new User();
+//        String userId = user.getUserId();
+        user.setUserId(signUpRequest.getUserId());
         user.setUserName(signUpRequest.getUserName());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(signUpRequest.getPassword());
         user.setPhoneNumber(signUpRequest.getPhoneNumber());
+        WalletRequest walletRequest = new WalletRequest();
+        walletRequest.setUser(user);
+        walletRequest.setBalance(BigDecimal.valueOf(0.00));
+        walletRequest.setTransactions(new ArrayList<>());
+        walletService.createWallet(walletRequest);
+
+//        WalletResponse userWallet = addWalletToUser(user.getUserId(), walletRequest);
+//        user.setWallet(userWallet.getUser().getWallet());
+
 
         userRepository.save(user);
         SignUpResponse response = new SignUpResponse();
@@ -84,6 +100,23 @@ public class E_walletUserService implements UserService{
         return foundUser;
     }
 
+//    @Override
+//    public WalletResponse addWalletToUser(String userId, WalletRequest walletRequest) {
+//                User foundUser = userRepository
+//                         .findById(userId)
+//                         .orElseThrow(() -> new WalletBaseException(USER_NOT_FOUND_EXCEPTION));
+//        walletRequest.setBalance(BigDecimal.valueOf(0.00));
+//        walletRequest.setTransactions(new ArrayList<>());
+//
+//        WalletResponse savedWallet = walletService.createWallet(walletRequest);
+//
+//        savedWallet.setUser(foundUser);
+//
+//        foundUser.setWallet(savedWallet.getUser().getWallet());
+//        userRepository.save(foundUser);
+//
+//        return savedWallet;
+//    }
 
 
 }

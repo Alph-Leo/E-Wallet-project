@@ -1,23 +1,22 @@
-package semicolon.africa.wallet.data.models;
+package semicolon.africa.wallet.dtos.response;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import semicolon.africa.wallet.data.models.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-@Getter
 @Setter
+@Getter
 @ToString
-@Document("Transaction")
-public class Transaction {
+public class TransactionResponse {
+
     @Id
     private String transactionId ;
+    private String message;
     private TransactionType transactionType;
     private BigDecimal amount;
-    private String senderId;
-    private String receiverId;
     private LocalDateTime transactionDate;
-
 }

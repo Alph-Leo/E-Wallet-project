@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import semicolon.africa.wallet.WalletAppApplication;
 import semicolon.africa.wallet.data.models.Transaction;
-import semicolon.africa.wallet.data.models.User;
 import semicolon.africa.wallet.dtos.request.WalletRequest;
 import semicolon.africa.wallet.dtos.response.WalletResponse;
 
@@ -25,9 +24,8 @@ public class WalletServiceTest {
     @Test
     public void testCreateWallet(){
         WalletRequest request = new WalletRequest();
-        request.setBalance(BigDecimal.valueOf(1000));
+        request.setBalance(BigDecimal.valueOf(0.00));
         request.setTransactions(List.of(new Transaction()));
-
 
         WalletResponse savedWallet = walletService.createWallet(request);
         log.info("Newly created wallet------->{}", savedWallet);

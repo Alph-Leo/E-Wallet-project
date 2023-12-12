@@ -21,6 +21,5 @@ public class User {
     private String email;
     private String password;
     private Address address;
-    @Lazy
     private Wallet wallet;
 }

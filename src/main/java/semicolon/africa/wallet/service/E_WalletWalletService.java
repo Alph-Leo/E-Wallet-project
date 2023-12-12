@@ -9,6 +9,8 @@ import semicolon.africa.wallet.data.models.Wallet;
 import semicolon.africa.wallet.data.repositories.WalletRepository;
 import semicolon.africa.wallet.dtos.request.WalletRequest;
 import semicolon.africa.wallet.dtos.response.WalletResponse;
+import semicolon.africa.wallet.exception.WalletBaseException;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -25,6 +27,20 @@ public class E_WalletWalletService implements WalletService{
         return response;
     }
 
+    @Override
+    public Wallet findByUserId(String userPhoneNumber) {
+        if (userPhoneNumber != null) {
+            Wallet foundId = walletRepository.findWalletByUserPhoneNumber(userPhoneNumber);
+            return foundId;
+        }
+                throw new WalletBaseException("User Id Is Null");
+    }
+
+    @Override
+    public void updateWallet(Wallet wallet) {
+        walletRepository.save(wallet);
+    }
+
     @NonNull
     private WalletResponse getWalletResponse(Wallet wallet) {
         WalletResponse response = new WalletResponse();
@@ -34,4 +50,5 @@ public class E_WalletWalletService implements WalletService{
 
         return response;
     }
+
 }

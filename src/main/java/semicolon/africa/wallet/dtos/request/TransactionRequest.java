@@ -1,17 +1,19 @@
-package semicolon.africa.wallet.data.models;
+package semicolon.africa.wallet.dtos.request;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import semicolon.africa.wallet.data.models.TransactionType;
+import semicolon.africa.wallet.data.models.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-@Getter
 @Setter
+@Getter
 @ToString
-@Document("Transaction")
-public class Transaction {
+public class TransactionRequest {
+
     @Id
     private String transactionId ;
     private TransactionType transactionType;
@@ -19,5 +21,4 @@ public class Transaction {
     private String senderId;
     private String receiverId;
     private LocalDateTime transactionDate;
-
 }
