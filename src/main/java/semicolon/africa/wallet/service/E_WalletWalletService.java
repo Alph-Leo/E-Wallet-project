@@ -1,39 +1,76 @@
 package semicolon.africa.wallet.service;
 
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import semicolon.africa.wallet.data.models.User;
+import semicolon.africa.wallet.data.models.Transaction;
 import semicolon.africa.wallet.data.models.Wallet;
 import semicolon.africa.wallet.data.repositories.WalletRepository;
-import semicolon.africa.wallet.dtos.request.WalletRequest;
-import semicolon.africa.wallet.dtos.response.WalletResponse;
+import semicolon.africa.wallet.dtos.request.LoginRequest;
+import semicolon.africa.wallet.dtos.request.RegistrationRequest;
+import semicolon.africa.wallet.dtos.response.LoginResponse;
+import semicolon.africa.wallet.dtos.response.RegistrationResponse;
 import semicolon.africa.wallet.exception.WalletBaseException;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static semicolon.africa.wallet.utils.AppUtils.*;
+
+
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class E_WalletWalletService implements WalletService{
     private final WalletRepository walletRepository;
-    @Override
-    public WalletResponse createWallet(WalletRequest walletRequest) {
-        Wallet wallet = new Wallet();
-        wallet.setBalance(walletRequest.getBalance());
-        wallet.setTransactions(walletRequest.getTransactions());
-        Wallet savedWallet = walletRepository.save(wallet);
 
-        WalletResponse response = getWalletResponse(savedWallet);
-        return response;
+    @Override
+    public RegistrationResponse signUp(RegistrationRequest registrationRequest) {
+        String email = registrationRequest.getEmail().toLowerCase();
+        String phoneNumber = registrationRequest.getPhoneNumber();
+        if (validateEmail(email)) {
+
+            Wallet wallet = new Wallet();
+            wallet.setWalletId(registrationRequest.getWalletId());
+            wallet.setUserName(registrationRequest.getUserName());
+            wallet.setEmail(email);
+            wallet.setPhoneNumber(phoneNumber);
+            wallet.setPassword(registrationRequest.getPassword());
+            wallet.setBalance(BigDecimal.valueOf(10000.00));
+            wallet.setTransactions(new ArrayList<>());
+
+            Wallet savedWallet = walletRepository.save(wallet);
+
+            RegistrationResponse response = new RegistrationResponse();
+            response.setMessage(REGISTRATION_SUCCESSFUL_MESSAGE);
+
+            return response;
+        }throw new WalletBaseException(INVALID_EMAIL_EXCEPTION);
     }
 
     @Override
-    public Wallet findByUserId(String userPhoneNumber) {
-        if (userPhoneNumber != null) {
-            Wallet foundId = walletRepository.findWalletByUserPhoneNumber(userPhoneNumber);
-            return foundId;
-        }
-                throw new WalletBaseException("User Id Is Null");
+    public LoginResponse login(LoginRequest loginRequest) {
+        String email = loginRequest.getEmail().toLowerCase();
+        String phoneNumber = loginRequest.getPhoneNumber();
+
+        Wallet walletUser = walletRepository.findUserByEmailOrPhoneNumber(email, phoneNumber);
+        if (walletUser != null && Objects.equals(walletUser.getPassword(), loginRequest.getPassword())){
+            String userName = walletUser.getUserName();
+            LoginResponse response = new LoginResponse();
+            response.setMessage(LOGIN_SUCCESSFUL_MESSAGE + BLANK_SPACE + userName);
+
+            return response;
+        }else throw new WalletBaseException(LOGIN_ERROR_MESSAGE);
+    }
+
+    @Override
+    public Wallet findWalletById(String walletId) {
+        Wallet foundWallet = walletRepository.findById(walletId)
+                                                .orElseThrow(()-> new
+                                                        WalletBaseException(USER_NOT_FOUND_EXCEPTION));
+        return foundWallet;
     }
 
     @Override
@@ -41,14 +78,5 @@ public class E_WalletWalletService implements WalletService{
         walletRepository.save(wallet);
     }
 
-    @NonNull
-    private WalletResponse getWalletResponse(Wallet wallet) {
-        WalletResponse response = new WalletResponse();
-        response.setWalletId(wallet.getWalletId());
-        response.setBalance(wallet.getBalance());
-        response.setTransactions(wallet.getTransactions());
-
-        return response;
-    }
 
 }

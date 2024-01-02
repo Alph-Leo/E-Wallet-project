@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import semicolon.africa.wallet.data.models.TransactionType;
-import semicolon.africa.wallet.data.models.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

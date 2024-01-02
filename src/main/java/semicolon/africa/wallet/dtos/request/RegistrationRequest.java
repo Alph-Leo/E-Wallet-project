@@ -11,16 +11,11 @@ import java.util.List;
 public class RegistrationRequest {
 
     @Id
-    private String userId;
+    private String walletId;
     private String userName;
     private String phoneNumber;
     private String email;
     private String password;
-    private String addressId;
-    private String houseNumber;
-    private String street;
-    private String localGovernmentArea;
-    private String state;
-    private String country;
-    private Wallet wallet;
+    private Address address;
+
 }
