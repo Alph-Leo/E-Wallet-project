@@ -30,6 +30,10 @@ public class E_WalletWalletService implements WalletService{
     public RegistrationResponse signUp(RegistrationRequest registrationRequest) {
         String email = registrationRequest.getEmail().toLowerCase();
         String phoneNumber = registrationRequest.getPhoneNumber();
+
+//        if (walletRepository.existByMail(email) || walletRepository.existByPhoneNumber(phoneNumber)){
+//            throw new WalletBaseException("Email Or Phone Number Already Exists");
+//        }
         if (validateEmail(email)) {
 
             Wallet wallet = new Wallet();
@@ -38,7 +42,7 @@ public class E_WalletWalletService implements WalletService{
             wallet.setEmail(email);
             wallet.setPhoneNumber(phoneNumber);
             wallet.setPassword(registrationRequest.getPassword());
-            wallet.setBalance(BigDecimal.valueOf(10000.00));
+            wallet.setBalance(BigDecimal.ZERO);
             wallet.setTransactions(new ArrayList<>());
 
             Wallet savedWallet = walletRepository.save(wallet);
