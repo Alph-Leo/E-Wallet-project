@@ -35,9 +35,9 @@ public class E_WalletWalletService implements WalletService{
         String email = registrationRequest.getEmail().toLowerCase();
         String phoneNumber = registrationRequest.getPhoneNumber();
 
-//        if (walletRepository.existByMail(email) || walletRepository.existByPhoneNumber(phoneNumber)){
-//            throw new WalletBaseException("Email Or Phone Number Already Exists");
-//        }
+        if (walletRepository.existsByMail(email) || walletRepository.existsByPhoneNumber(phoneNumber)){
+            throw new WalletBaseException("Email Or Phone Number Already Exists");
+        }
         if (validateEmail(email)) {
 
             Wallet wallet = new Wallet();
@@ -87,32 +87,41 @@ public class E_WalletWalletService implements WalletService{
     }
 
     @Override
-    public ProfileUpdateResponse updateProfile(ProfileUpdateRequest profileUpdateRequest, String userId) {
-        Wallet foundWallet = walletRepository
-                                .findById(userId)
-                                    .orElseThrow(() -> new WalletBaseException(USER_NOT_FOUND_EXCEPTION));
+    public ProfileUpdateResponse updateProfile(ProfileUpdateRequest profileUpdateRequest, String walletId) {
+        try {
+            Wallet foundWallet = walletRepository
+                    .findById(walletId)
+                    .orElseThrow(() -> new WalletBaseException(USER_NOT_FOUND_EXCEPTION));
 
-        MultipartFile imageProfile = profileUpdateRequest.getProfileImage();
-        String imageUrl = cloudService.upload(imageProfile);
+            MultipartFile profileImage = profileUpdateRequest.getProfileImage();
+            if (profileImage == null) {
+                throw new WalletBaseException("Profile image is null");
+            }
 
-        ProfileUpdate profileUpdate = new ProfileUpdate();
-        profileUpdate.setAddressId(profileUpdateRequest.getAddressId());
-        profileUpdate.setHouseNumber(profileUpdateRequest.getHouseNumber());
-        profileUpdate.setStreet(profileUpdateRequest.getStreet());
-        profileUpdate.setLocalGovernmentArea(profileUpdateRequest.getLocalGovernmentArea());
-        profileUpdate.setState(profileUpdateRequest.getState());
-        profileUpdate.setCountry(profileUpdateRequest.getCountry());
-        profileUpdate.setProfileImage(imageUrl);
+            String imageUrl = cloudService.upload(profileImage);
 
-        foundWallet.setProfileUpdate(profileUpdate);
+            ProfileUpdate profileUpdate = new ProfileUpdate();
+            profileUpdate.setAddressId(profileUpdateRequest.getAddressId());
+            profileUpdate.setHouseNumber(profileUpdateRequest.getHouseNumber());
+            profileUpdate.setStreet(profileUpdateRequest.getStreet());
+            profileUpdate.setLocalGovernmentArea(profileUpdateRequest.getLocalGovernmentArea());
+            profileUpdate.setState(profileUpdateRequest.getState());
+            profileUpdate.setCountry(profileUpdateRequest.getCountry());
+            profileUpdate.setProfileImage(imageUrl);
 
-        walletRepository.save(foundWallet);
+            foundWallet.setProfileUpdate(profileUpdate);
 
-        ProfileUpdateResponse response = new ProfileUpdateResponse();
-        response.setMessage(UPDATE_SUCCESS_MESSAGE);
+            walletRepository.save(foundWallet);
+
+            ProfileUpdateResponse response = new ProfileUpdateResponse();
+            response.setMessage(UPDATE_SUCCESS_MESSAGE);
 
 
-        return response;
+            return response;
+        } catch (Exception e){
+            log.error("Error updating profile", e);
+            throw new WalletBaseException( e.getMessage());
+        }
     }
 
 
