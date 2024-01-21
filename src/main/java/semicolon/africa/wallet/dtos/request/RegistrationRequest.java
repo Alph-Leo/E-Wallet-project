@@ -5,7 +5,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import semicolon.africa.wallet.data.models.*;
 
-import java.util.List;
 @Getter
 @Setter
 public class RegistrationRequest {
@@ -16,6 +15,6 @@ public class RegistrationRequest {
     private String phoneNumber;
     private String email;
     private String password;
-    private Address address;
+    private ProfileUpdate profileUpdate;
 
 }

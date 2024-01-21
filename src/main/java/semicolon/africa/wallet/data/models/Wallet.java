@@ -1,7 +1,6 @@
 package semicolon.africa.wallet.data.models;
 
 import lombok.*;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,7 +20,8 @@ public class Wallet {
     private String phoneNumber;
     private String email;
     private String password;
-    private Address address;
+    private ProfileUpdate profileUpdate;
     private BigDecimal balance;
+    private String profileImage;
     private List<Transaction> transactions;
 }

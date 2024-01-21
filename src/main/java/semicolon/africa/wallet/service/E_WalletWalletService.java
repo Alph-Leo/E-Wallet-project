@@ -3,18 +3,21 @@ package semicolon.africa.wallet.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import semicolon.africa.wallet.data.models.Transaction;
+import org.springframework.web.multipart.MultipartFile;
+import semicolon.africa.wallet.data.models.ProfileUpdate;
 import semicolon.africa.wallet.data.models.Wallet;
 import semicolon.africa.wallet.data.repositories.WalletRepository;
+import semicolon.africa.wallet.dtos.request.ProfileUpdateRequest;
 import semicolon.africa.wallet.dtos.request.LoginRequest;
 import semicolon.africa.wallet.dtos.request.RegistrationRequest;
+import semicolon.africa.wallet.dtos.response.ProfileUpdateResponse;
 import semicolon.africa.wallet.dtos.response.LoginResponse;
 import semicolon.africa.wallet.dtos.response.RegistrationResponse;
 import semicolon.africa.wallet.exception.WalletBaseException;
+import semicolon.africa.wallet.service.cloud.CloudService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static semicolon.africa.wallet.utils.AppUtils.*;
@@ -25,6 +28,7 @@ import static semicolon.africa.wallet.utils.AppUtils.*;
 @Slf4j
 public class E_WalletWalletService implements WalletService{
     private final WalletRepository walletRepository;
+    private final CloudService cloudService;
 
     @Override
     public RegistrationResponse signUp(RegistrationRequest registrationRequest) {
@@ -80,6 +84,35 @@ public class E_WalletWalletService implements WalletService{
     @Override
     public void updateWallet(Wallet wallet) {
         walletRepository.save(wallet);
+    }
+
+    @Override
+    public ProfileUpdateResponse updateProfile(ProfileUpdateRequest profileUpdateRequest, String userId) {
+        Wallet foundWallet = walletRepository
+                                .findById(userId)
+                                    .orElseThrow(() -> new WalletBaseException(USER_NOT_FOUND_EXCEPTION));
+
+        MultipartFile imageProfile = profileUpdateRequest.getProfileImage();
+        String imageUrl = cloudService.upload(imageProfile);
+
+        ProfileUpdate profileUpdate = new ProfileUpdate();
+        profileUpdate.setAddressId(profileUpdateRequest.getAddressId());
+        profileUpdate.setHouseNumber(profileUpdateRequest.getHouseNumber());
+        profileUpdate.setStreet(profileUpdateRequest.getStreet());
+        profileUpdate.setLocalGovernmentArea(profileUpdateRequest.getLocalGovernmentArea());
+        profileUpdate.setState(profileUpdateRequest.getState());
+        profileUpdate.setCountry(profileUpdateRequest.getCountry());
+        profileUpdate.setProfileImage(imageUrl);
+
+        foundWallet.setProfileUpdate(profileUpdate);
+
+        walletRepository.save(foundWallet);
+
+        ProfileUpdateResponse response = new ProfileUpdateResponse();
+        response.setMessage(UPDATE_SUCCESS_MESSAGE);
+
+
+        return response;
     }
 
 

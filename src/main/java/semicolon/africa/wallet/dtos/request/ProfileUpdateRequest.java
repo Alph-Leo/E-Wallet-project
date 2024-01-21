@@ -1,12 +1,12 @@
-package semicolon.africa.wallet.data.models;
+package semicolon.africa.wallet.dtos.request;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
-@Document("Address")
-public class Address {
+public class ProfileUpdateRequest {
+
     @Id
     private String addressId;
     private String houseNumber;
@@ -14,4 +14,5 @@ public class Address {
     private String localGovernmentArea;
     private String state;
     private String country;
+    private MultipartFile profileImage;
 }
